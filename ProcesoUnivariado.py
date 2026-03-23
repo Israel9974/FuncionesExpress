@@ -40,8 +40,46 @@ def valores_iguales(columna, percentiles):
 
 
 
+## Outliers
 
+def DetectorOutliers(df):
+    """
+    Devuelve un DataFrame con el número y porcentaje de outliers
+    por cada variable numérica del DataFrame original.
+    
+    La variable queda como índice.
+    """
+    resultados = []
 
+    for col in df.select_dtypes(include=[np.number]).columns:
+        data = df[col].dropna()
+        
+        # Saltar columnas vacías
+        if len(data) == 0:
+            resultados.append([col, 0, 0.0])
+            continue
+        
+        # Calcular Q1 y Q3
+        Q1 = np.percentile(data, 25)
+        Q3 = np.percentile(data, 75)
+        IQR = Q3 - Q1
+        
+        # Límites
+        limite_inferior = Q1 - 1.5 * IQR
+        limite_superior = Q3 + 1.5 * IQR
+        
+        # Outliers
+        mask_outliers = (data < limite_inferior) | (data > limite_superior)
+        num_outliers = mask_outliers.sum()
+        porcentaje_outliers = (num_outliers / len(data)) * 100
+        
+        resultados.append([col, num_outliers, porcentaje_outliers])
+    
+    # Crear DataFrame con índice = variable
+    resumen = pd.DataFrame(resultados, columns=['variable','num_outliers','porcentaje_outliers'])
+    resumen.set_index('variable', inplace=True)
+    
+    return resumen
 
 
 
