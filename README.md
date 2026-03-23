@@ -1,2 +1,4 @@
 # FuncionesExpress
-Funciones de uso rapido para ordenar los Notebooks del Colab
+Funciones de uso rápido para ordenar los Notebooks del Colab
+Ayuda a tener menos código
+
